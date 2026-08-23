@@ -1,37 +1,113 @@
-export type TemplateId = "classic" | "modern" | "botanical";
+export type FrameId =
+  | "classic"
+  | "modern"
+  | "botanical"
+  | "corners"
+  | "banner"
+  | "minimal"
+  | "duotone"
+  | "stripe"
+  | "ornate"
+  | "arch";
 
-export interface CertTemplate {
-  id: TemplateId;
+export interface Palette {
+  id: string;
   name: string;
-  blurb: string;
-  /** css class applied to the certificate surface */
-  surface: string;
+  bg: string;
+  panel: string;
+  ink: string;
+  soft: string;
   accent: string;
 }
 
-export const TEMPLATES: CertTemplate[] = [
+export interface CertTemplate {
+  id: string;
+  name: string;
+  frame: FrameId;
+  palette: Palette;
+}
+
+const FRAMES: { id: FrameId; name: string }[] = [
+  { id: "classic", name: "Classic" },
+  { id: "modern", name: "Modern" },
+  { id: "botanical", name: "Rounded" },
+  { id: "corners", name: "Corner Marks" },
+  { id: "banner", name: "Banner" },
+  { id: "minimal", name: "Minimal" },
+  { id: "duotone", name: "Duotone" },
+  { id: "stripe", name: "Stripe" },
+  { id: "ornate", name: "Ornate" },
+  { id: "arch", name: "Arch" },
+];
+
+const PALETTES: Palette[] = [
   {
-    id: "classic",
-    name: "Classic Gold",
-    blurb: "Formal double border with gilded flourishes.",
-    surface: "cert-classic",
-    accent: "var(--gold)",
+    id: "gold",
+    name: "Gold",
+    bg: "#fffdf6",
+    panel: "#ffffff",
+    ink: "#2c2415",
+    soft: "#6b6250",
+    accent: "#b8912f",
   },
   {
-    id: "modern",
-    name: "Modern Slate",
-    blurb: "Clean typographic layout with a bold side bar.",
-    surface: "cert-modern",
-    accent: "var(--ink)",
+    id: "navy",
+    name: "Navy",
+    bg: "#f7f9fc",
+    panel: "#ffffff",
+    ink: "#16233d",
+    soft: "#5a6781",
+    accent: "#1f4e9c",
   },
   {
-    id: "botanical",
-    name: "Botanical Sage",
-    blurb: "Soft rounded frame with a calm herbal palette.",
-    surface: "cert-botanical",
-    accent: "var(--sage)",
+    id: "sage",
+    name: "Sage",
+    bg: "#f6faf5",
+    panel: "#ffffff",
+    ink: "#1f3326",
+    soft: "#5c7263",
+    accent: "#4f7359",
+  },
+  {
+    id: "burgundy",
+    name: "Burgundy",
+    bg: "#fdf7f7",
+    panel: "#ffffff",
+    ink: "#33161c",
+    soft: "#7a5a60",
+    accent: "#8c2f3e",
+  },
+  {
+    id: "graphite",
+    name: "Graphite",
+    bg: "#f6f6f7",
+    panel: "#ffffff",
+    ink: "#1d1f24",
+    soft: "#63666e",
+    accent: "#3d4149",
+  },
+  {
+    id: "teal",
+    name: "Teal",
+    bg: "#f4fbfb",
+    panel: "#ffffff",
+    ink: "#0f2b2c",
+    soft: "#4f7273",
+    accent: "#127475",
   },
 ];
+
+export const TEMPLATES: CertTemplate[] = FRAMES.flatMap((frame) =>
+  PALETTES.map((palette) => ({
+    id: `${frame.id}-${palette.id}`,
+    name: `${frame.name} ${palette.name}`,
+    frame: frame.id,
+    palette,
+  })),
+);
+
+export const FRAME_FILTERS = FRAMES;
+export const PALETTE_FILTERS = PALETTES;
 
 export interface CertContent {
   organization: string;
