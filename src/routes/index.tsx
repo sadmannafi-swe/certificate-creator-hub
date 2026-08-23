@@ -5,11 +5,12 @@ import JSZip from "jszip";
 import { Certificate } from "@/components/Certificate";
 import {
   DEFAULT_CONTENT,
+  FRAME_FILTERS,
+  PALETTE_FILTERS,
   TEMPLATES,
   parseNames,
   slugify,
   type CertContent,
-  type TemplateId,
 } from "@/lib/templates";
 
 export const Route = createFileRoute("/")({
@@ -37,7 +38,9 @@ export const Route = createFileRoute("/")({
 type Generated = { name: string; dataUrl: string };
 
 function Home() {
-  const [templateId, setTemplateId] = useState<TemplateId>("classic");
+  const [templateId, setTemplateId] = useState<string>(TEMPLATES[0]!.id);
+  const [frameFilter, setFrameFilter] = useState<string>("all");
+  const [paletteFilter, setPaletteFilter] = useState<string>("all");
   const [content, setContent] = useState<CertContent>(DEFAULT_CONTENT);
   const [rawNames, setRawNames] = useState("1. Ayesha Rahman\n2. Daniel Okafor\n3. Mei Lin Chen");
   const [generated, setGenerated] = useState<Generated[]>([]);
@@ -47,6 +50,15 @@ function Home() {
   const stageRef = useRef<HTMLDivElement>(null);
   const template = TEMPLATES.find((t) => t.id === templateId)!;
   const names = useMemo(() => parseNames(rawNames), [rawNames]);
+  const visibleTemplates = useMemo(
+    () =>
+      TEMPLATES.filter(
+        (t) =>
+          (frameFilter === "all" || t.frame === frameFilter) &&
+          (paletteFilter === "all" || t.palette.id === paletteFilter),
+      ),
+    [frameFilter, paletteFilter],
+  );
 
   const set = (key: keyof CertContent) => (e: { target: { value: string } }) =>
     setContent((c) => ({ ...c, [key]: e.target.value }));
@@ -130,20 +142,43 @@ function Home() {
 
         {/* Step 1 — templates */}
         <section className="mt-10">
-          <h2 className="text-lg font-semibold">1. Choose a template</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-3">
-            {TEMPLATES.map((t) => (
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="text-lg font-semibold">1. Choose a template</h2>
+            <span className="text-sm text-muted-foreground">
+              {visibleTemplates.length} of {TEMPLATES.length} designs
+            </span>
+          </div>
+
+          <div className="mt-4 space-y-2">
+            <FilterRow
+              label="Style"
+              value={frameFilter}
+              onChange={setFrameFilter}
+              options={FRAME_FILTERS.map((f) => ({ id: f.id, name: f.name }))}
+            />
+            <FilterRow
+              label="Color"
+              value={paletteFilter}
+              onChange={setPaletteFilter}
+              options={PALETTE_FILTERS.map((p) => ({ id: p.id, name: p.name, swatch: p.accent }))}
+            />
+          </div>
+
+          <div className="mt-5 grid max-h-[560px] gap-4 overflow-y-auto rounded-lg border border-border bg-secondary/50 p-4 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleTemplates.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setTemplateId(t.id)}
-                className={`rounded-lg border p-4 text-left transition-colors ${
+                className={`overflow-hidden rounded-lg border bg-card text-left transition-all ${
                   t.id === templateId
-                    ? "border-gold bg-accent/40 ring-2 ring-gold/40"
-                    : "border-border bg-card hover:bg-secondary"
+                    ? "border-gold ring-2 ring-gold/50"
+                    : "border-border hover:border-gold/60"
                 }`}
               >
-                <div className="font-display text-xl font-semibold">{t.name}</div>
-                <p className="mt-1 text-sm text-muted-foreground">{t.blurb}</p>
+                <ScaledCert>
+                  <Certificate template={t} content={content} name={names[0] ?? "Participant"} />
+                </ScaledCert>
+                <div className="border-t border-border px-3 py-2 text-sm font-medium">{t.name}</div>
               </button>
             ))}
           </div>
@@ -287,6 +322,45 @@ function ScaledCert({ children }: { children: React.ReactNode }) {
       >
         {children}
       </div>
+    </div>
+  );
+}
+
+function FilterRow({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { id: string; name: string; swatch?: string }[];
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <span className="w-12 shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      {[{ id: "all", name: "All" }, ...options].map((o) => (
+        <button
+          key={o.id}
+          onClick={() => onChange(o.id)}
+          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+            value === o.id
+              ? "border-gold bg-accent/50"
+              : "border-border bg-card hover:bg-secondary"
+          }`}
+        >
+          {"swatch" in o && o.swatch && (
+            <span
+              className="size-2.5 rounded-full"
+              style={{ backgroundColor: o.swatch as string }}
+            />
+          )}
+          {o.name}
+        </button>
+      ))}
     </div>
   );
 }
