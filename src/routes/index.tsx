@@ -62,13 +62,14 @@ function Home() {
         stageRef.current.querySelectorAll<HTMLDivElement>("[data-cert]"),
       );
       for (let i = 0; i < nodes.length; i++) {
-        const dataUrl = await toPng(nodes[i], {
+        const node = nodes[i]!;
+        const dataUrl = await toPng(node, {
           width: 1000,
           height: 707,
           pixelRatio: 2,
           cacheBust: true,
         });
-        out.push({ name: names[i], dataUrl });
+        out.push({ name: names[i]!, dataUrl });
         setProgress(i + 1);
       }
       setGenerated(out);
@@ -90,7 +91,7 @@ function Home() {
     generated.forEach((g, i) => {
       folder.file(
         `${String(i + 1).padStart(2, "0")}-${slugify(g.name)}.png`,
-        g.dataUrl.split(",")[1],
+        g.dataUrl.split(",")[1]!,
         { base64: true },
       );
     });
