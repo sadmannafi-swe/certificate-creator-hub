@@ -401,16 +401,11 @@
 .cert-surface > .cert-stripe-bottom { z-index: 2; }
 
 /* foil-treated typography */
-.cert-title,
-.cert-banner {
+.cert-title {
   background-image: linear-gradient(100deg, var(--c-foil-1) 0%, var(--c-foil-2) 34%, var(--c-foil-3) 47%, var(--c-foil-2) 60%, var(--c-foil-1) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-.cert-banner .cert-banner {
-  background-image: none;
-  color: var(--c-panel);
 }
 .cert-org { color: var(--c-foil-1); }
 .cert-rule {
