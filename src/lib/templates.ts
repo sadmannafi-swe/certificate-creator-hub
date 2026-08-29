@@ -8,7 +8,13 @@ export type FrameId =
   | "duotone"
   | "stripe"
   | "ornate"
-  | "arch";
+  | "arch"
+  | "deco"
+  | "laurel"
+  | "guilloche"
+  | "foil"
+  | "marble"
+  | "engraved";
 
 export interface Palette {
   id: string;
@@ -18,6 +24,9 @@ export interface Palette {
   ink: string;
   soft: string;
   accent: string;
+  foil1: string;
+  foil2: string;
+  foil3: string;
 }
 
 export interface CertTemplate {
@@ -38,11 +47,20 @@ const FRAMES: { id: FrameId; name: string }[] = [
   { id: "stripe", name: "Stripe" },
   { id: "ornate", name: "Ornate" },
   { id: "arch", name: "Arch" },
+  { id: "deco", name: "Art Deco" },
+  { id: "laurel", name: "Laurel" },
+  { id: "guilloche", name: "Guilloche" },
+  { id: "foil", name: "Foil" },
+  { id: "marble", name: "Marble" },
+  { id: "engraved", name: "Engraved" },
 ];
 
 const PALETTES: Palette[] = [
   {
     id: "gold",
+    foil1: "#8a6a1c",
+    foil2: "#e7c86a",
+    foil3: "#fff3c9",
     name: "Gold",
     bg: "#fffdf6",
     panel: "#ffffff",
@@ -52,6 +70,9 @@ const PALETTES: Palette[] = [
   },
   {
     id: "navy",
+    foil1: "#12315f",
+    foil2: "#5b8fd6",
+    foil3: "#dbe9ff",
     name: "Navy",
     bg: "#f7f9fc",
     panel: "#ffffff",
@@ -61,6 +82,9 @@ const PALETTES: Palette[] = [
   },
   {
     id: "sage",
+    foil1: "#2f5238",
+    foil2: "#87b18f",
+    foil3: "#e2f1e4",
     name: "Sage",
     bg: "#f6faf5",
     panel: "#ffffff",
@@ -70,6 +94,9 @@ const PALETTES: Palette[] = [
   },
   {
     id: "burgundy",
+    foil1: "#6a1f2b",
+    foil2: "#c1697a",
+    foil3: "#ffdfe4",
     name: "Burgundy",
     bg: "#fdf7f7",
     panel: "#ffffff",
@@ -79,6 +106,9 @@ const PALETTES: Palette[] = [
   },
   {
     id: "graphite",
+    foil1: "#2a2d33",
+    foil2: "#8d939e",
+    foil3: "#eceef2",
     name: "Graphite",
     bg: "#f6f6f7",
     panel: "#ffffff",
@@ -88,6 +118,9 @@ const PALETTES: Palette[] = [
   },
   {
     id: "teal",
+    foil1: "#0b4f50",
+    foil2: "#4fb0b1",
+    foil3: "#dcf5f5",
     name: "Teal",
     bg: "#f4fbfb",
     panel: "#ffffff",
