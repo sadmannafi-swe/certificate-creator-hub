@@ -352,3 +352,179 @@
   opacity: 0.12;
 }
 .cert-arch .cert-inner { padding: 64px 80px; }
+
+/* ---------- Luxury texture stack ---------- */
+.cert-tex-weave,
+.cert-tex-grain,
+.cert-tex-sheen,
+.cert-watermark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* fine linen weave */
+.cert-tex-weave {
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(0deg, color-mix(in oklab, var(--c-ink) 5%, transparent) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, color-mix(in oklab, var(--c-ink) 4%, transparent) 0 1px, transparent 1px 4px);
+}
+/* pressed paper grain */
+.cert-tex-grain {
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+/* soft raking light */
+.cert-tex-sheen {
+  background:
+    radial-gradient(120% 80% at 15% 0%, color-mix(in oklab, white 75%, transparent) 0%, transparent 55%),
+    radial-gradient(90% 70% at 100% 100%, color-mix(in oklab, var(--c-accent) 12%, transparent) 0%, transparent 60%);
+  opacity: 0.55;
+}
+/* embossed monogram watermark */
+.cert-watermark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif-display);
+  font-size: 460px;
+  line-height: 1;
+  font-weight: 600;
+  color: color-mix(in oklab, var(--c-accent) 7%, transparent);
+  letter-spacing: 0;
+}
+
+.cert-inner { z-index: 2; }
+.cert-surface > .cert-bar,
+.cert-surface > .cert-stripe-top,
+.cert-surface > .cert-stripe-bottom { z-index: 2; }
+
+/* foil-treated typography */
+.cert-title,
+.cert-banner {
+  background-image: linear-gradient(100deg, var(--c-foil-1) 0%, var(--c-foil-2) 34%, var(--c-foil-3) 47%, var(--c-foil-2) 60%, var(--c-foil-1) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cert-banner .cert-banner {
+  background-image: none;
+  color: var(--c-panel);
+}
+.cert-org { color: var(--c-foil-1); }
+.cert-rule {
+  height: 3px;
+  width: 360px;
+  opacity: 1;
+  background: linear-gradient(90deg, transparent, var(--c-foil-1) 18%, var(--c-foil-3) 50%, var(--c-foil-1) 82%, transparent);
+}
+
+/* wax-and-foil seal */
+.cert-seal {
+  width: 108px;
+  height: 108px;
+  flex: none;
+  align-self: flex-end;
+  margin-bottom: -6px;
+  opacity: 0.95;
+}
+.cert-modern .cert-footer { align-items: flex-end; }
+
+/* filigree corners */
+.cert-filigree {
+  position: absolute;
+  width: 104px;
+  height: 104px;
+  color: var(--c-foil-1);
+  opacity: 0.75;
+}
+.cert-filigree-tl { top: 16px; left: 16px; }
+.cert-filigree-tr { top: 16px; right: 16px; transform: scaleX(-1); }
+.cert-filigree-bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+.cert-filigree-br { bottom: 16px; right: 16px; transform: scale(-1); }
+
+/* ---------- New luxury frames ---------- */
+.cert-deco { padding: 26px; background: var(--c-bg); }
+.cert-deco .cert-inner {
+  background: var(--c-panel);
+  border: 2px solid var(--c-foil-1);
+  outline: 6px solid color-mix(in oklab, var(--c-foil-2) 45%, transparent);
+  outline-offset: -14px;
+  padding: 60px 84px;
+}
+.cert-deco-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.13;
+  background-image:
+    repeating-linear-gradient(60deg, var(--c-accent) 0 2px, transparent 2px 22px),
+    repeating-linear-gradient(-60deg, var(--c-accent) 0 2px, transparent 2px 22px);
+}
+.cert-deco .cert-corner { border-color: var(--c-foil-2); width: 58px; height: 58px; }
+
+.cert-laurel { padding: 30px; }
+.cert-laurel .cert-inner {
+  background: var(--c-panel);
+  border: 1px solid color-mix(in oklab, var(--c-foil-1) 60%, transparent);
+  box-shadow: inset 0 0 0 5px var(--c-bg), inset 0 0 0 6px color-mix(in oklab, var(--c-foil-2) 70%, transparent);
+  padding: 56px 96px;
+}
+
+.cert-guilloche { padding: 30px; }
+.cert-guilloche .cert-inner {
+  background: color-mix(in oklab, var(--c-panel) 92%, var(--c-bg));
+  border: 2px solid var(--c-foil-1);
+  padding: 56px 88px;
+}
+.cert-guilloche-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  background-image:
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 6px, color-mix(in oklab, var(--c-accent) 55%, transparent) 6px 7px),
+    repeating-radial-gradient(circle at 8% 92%, transparent 0 9px, color-mix(in oklab, var(--c-accent) 40%, transparent) 9px 10px),
+    repeating-radial-gradient(circle at 92% 8%, transparent 0 9px, color-mix(in oklab, var(--c-accent) 40%, transparent) 9px 10px);
+}
+
+.cert-foil { padding: 0; background: var(--c-panel); }
+.cert-foil-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, var(--c-foil-1) 0%, var(--c-foil-2) 22%, var(--c-foil-3) 34%, var(--c-foil-2) 46%, var(--c-foil-1) 68%, var(--c-foil-2) 100%);
+  opacity: 0.16;
+}
+.cert-foil .cert-inner {
+  margin: 28px;
+  border: 1px solid var(--c-foil-1);
+  box-shadow: inset 0 0 0 4px color-mix(in oklab, var(--c-foil-3) 55%, transparent);
+  padding: 52px 80px;
+}
+
+.cert-marble { padding: 28px; }
+.cert-marble-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background:
+    radial-gradient(60% 40% at 20% 25%, color-mix(in oklab, var(--c-accent) 16%, transparent), transparent 70%),
+    radial-gradient(50% 35% at 80% 70%, color-mix(in oklab, var(--c-foil-2) 30%, transparent), transparent 70%),
+    repeating-linear-gradient(25deg, transparent 0 26px, color-mix(in oklab, var(--c-ink) 4%, transparent) 26px 28px);
+}
+.cert-marble .cert-inner {
+  background: color-mix(in oklab, var(--c-panel) 85%, transparent);
+  border: 1px solid color-mix(in oklab, var(--c-foil-1) 55%, transparent);
+  padding: 56px 84px;
+}
+
+.cert-engraved { padding: 34px; background: var(--c-bg); }
+.cert-engraved .cert-inner {
+  background: var(--c-panel);
+  border: 1px solid color-mix(in oklab, var(--c-ink) 25%, transparent);
+  box-shadow:
+    inset 0 0 0 3px var(--c-panel),
+    inset 0 0 0 4px color-mix(in oklab, var(--c-foil-1) 70%, transparent),
+    inset 0 0 44px color-mix(in oklab, var(--c-ink) 10%, transparent);
+  padding: 58px 88px;
+}
+.cert-engraved .cert-name { text-shadow: 0 1px 0 color-mix(in oklab, white 80%, transparent); }
