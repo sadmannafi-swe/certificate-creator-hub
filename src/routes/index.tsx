@@ -108,13 +108,65 @@ function Home() {
       );
     });
     const blob = await zip.generateAsync({ type: "blob" });
+    saveBlob(blob, "gencertificates.zip");
+  }
+
+  function saveBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "gencertificates.zip";
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
   }
+
+  async function makePdf(items: Generated[]) {
+    const { jsPDF } = await import("jspdf");
+    const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: [1000, 707] });
+    items.forEach((item, i) => {
+      if (i > 0) doc.addPage([1000, 707], "landscape");
+      doc.addImage(item.dataUrl, "PNG", 0, 0, 1000, 707, undefined, "FAST");
+    });
+    return doc.output("blob");
+  }
+
+  async function downloadCombinedPdf() {
+    if (!generated.length) return;
+    setExporting("pdf");
+    try {
+      const blob = await makePdf(generated);
+      saveBlob(blob, `${slugify(content.organization) || "gencertificates"}-certificates.pdf`);
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  async function downloadPdfZip() {
+    if (!generated.length) return;
+    setExporting("pdf-zip");
+    try {
+      const zip = new JSZip();
+      const folder = zip.folder(slugify(content.organization) || "certificates")!;
+      for (let i = 0; i < generated.length; i++) {
+        const g = generated[i]!;
+        const blob = await makePdf([g]);
+        folder.file(
+          `${String(i + 1).padStart(2, "0")}-${slugify(g.name)}.pdf`,
+          await blob.arrayBuffer(),
+        );
+      }
+      const out = await zip.generateAsync({ type: "blob" });
+      saveBlob(out, "gencertificates-pdfs.zip");
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  async function downloadOnePdf(item: Generated) {
+    const blob = await makePdf([item]);
+    saveBlob(blob, `${slugify(item.name)}-certificate.pdf`);
+  }
+
 
   return (
     <div className="min-h-screen bg-background">
