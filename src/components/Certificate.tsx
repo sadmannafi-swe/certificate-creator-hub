@@ -32,18 +32,18 @@ function Filigree({ className }: { className: string }) {
   );
 }
 
-function Seal() {
+function Seal({ gid }: { gid: string }) {
   return (
     <svg className="cert-seal" viewBox="0 0 140 140" aria-hidden="true">
       <defs>
-        <linearGradient id="sealFoil" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="var(--c-foil-1)" />
           <stop offset="42%" stopColor="var(--c-foil-2)" />
           <stop offset="60%" stopColor="var(--c-foil-3)" />
           <stop offset="100%" stopColor="var(--c-foil-1)" />
         </linearGradient>
       </defs>
-      <circle cx="70" cy="70" r="46" fill="url(#sealFoil)" opacity="0.95" />
+      <circle cx="70" cy="70" r="46" fill={`url(#${gid})`} opacity="0.95" />
       <circle cx="70" cy="70" r="46" fill="none" stroke="var(--c-ink)" strokeWidth="0.6" opacity="0.25" />
       <circle cx="70" cy="70" r="37" fill="none" stroke="var(--c-panel)" strokeWidth="1.2" opacity="0.7" />
       <circle cx="70" cy="70" r="31" fill="none" stroke="var(--c-panel)" strokeWidth="0.6" opacity="0.5" />
@@ -54,7 +54,7 @@ function Seal() {
           y="20"
           width="1.2"
           height="7"
-          fill="url(#sealFoil)"
+          fill={`url(#${gid})`}
           transform={`rotate(${i * 10} 70 70)`}
         />
       ))}
@@ -134,7 +134,7 @@ export const Certificate = forwardRef<HTMLDivElement, Props>(function Certificat
             <div>{content.date}</div>
             <div>Date</div>
           </div>
-          <Seal />
+          <Seal gid={`seal-${template.id}`} />
           <div className="cert-sig-line" style={{ textAlign: "right" }}>
             <div className="cert-sig-name">{content.signatoryName}</div>
             <div>{content.signatoryRole}</div>
