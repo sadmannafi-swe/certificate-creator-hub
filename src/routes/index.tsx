@@ -45,6 +45,8 @@ function Home() {
   const [rawNames, setRawNames] = useState("1. Ayesha Rahman\n2. Daniel Okafor\n3. Mei Lin Chen");
   const [generated, setGenerated] = useState<Generated[]>([]);
   const [busy, setBusy] = useState(false);
+  const [exporting, setExporting] = useState<"pdf" | "pdf-zip" | null>(null);
+
   const [progress, setProgress] = useState(0);
 
   const stageRef = useRef<HTMLDivElement>(null);
