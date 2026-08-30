@@ -14,7 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      certificate_batches: {
+        Row: {
+          contact_email: string
+          created_at: string
+          edit_token: string
+          id: string
+          organization: string
+          title: string
+          updated_at: string
+          verify_headline: string
+          verify_message: string
+          website: string
+        }
+        Insert: {
+          contact_email?: string
+          created_at?: string
+          edit_token?: string
+          id?: string
+          organization?: string
+          title?: string
+          updated_at?: string
+          verify_headline?: string
+          verify_message?: string
+          website?: string
+        }
+        Update: {
+          contact_email?: string
+          created_at?: string
+          edit_token?: string
+          id?: string
+          organization?: string
+          title?: string
+          updated_at?: string
+          verify_headline?: string
+          verify_message?: string
+          website?: string
+        }
+        Relationships: []
+      }
+      certificates: {
+        Row: {
+          batch_id: string
+          cert_title: string
+          code: string
+          created_at: string
+          id: string
+          issue_date: string
+          reason: string
+          recipient_name: string
+          revoked: boolean
+          signatory_name: string
+          signatory_role: string
+        }
+        Insert: {
+          batch_id: string
+          cert_title?: string
+          code?: string
+          created_at?: string
+          id?: string
+          issue_date?: string
+          reason?: string
+          recipient_name: string
+          revoked?: boolean
+          signatory_name?: string
+          signatory_role?: string
+        }
+        Update: {
+          batch_id?: string
+          cert_title?: string
+          code?: string
+          created_at?: string
+          id?: string
+          issue_date?: string
+          reason?: string
+          recipient_name?: string
+          revoked?: boolean
+          signatory_name?: string
+          signatory_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
