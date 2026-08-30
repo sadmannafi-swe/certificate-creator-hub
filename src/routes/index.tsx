@@ -300,17 +300,36 @@ function Home() {
           <section className="mt-12">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-lg font-semibold">4. Your certificates</h2>
-              <button
-                onClick={downloadZip}
-                className="rounded-md border border-gold bg-accent/40 px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
-              >
-                Download all ({generated.length}) as ZIP
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={downloadCombinedPdf}
+                  disabled={exporting !== null}
+                  className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                >
+                  {exporting === "pdf"
+                    ? "Building PDF…"
+                    : `Download one PDF (${generated.length} pages)`}
+                </button>
+                <button
+                  onClick={downloadPdfZip}
+                  disabled={exporting !== null}
+                  className="rounded-md border border-gold bg-accent/40 px-4 py-2 text-sm font-medium transition-colors hover:bg-accent disabled:opacity-50"
+                >
+                  {exporting === "pdf-zip" ? "Building PDFs…" : "Separate PDFs (ZIP)"}
+                </button>
+                <button
+                  onClick={downloadZip}
+                  className="rounded-md border border-input px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary"
+                >
+                  PNG ZIP
+                </button>
+              </div>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
-              Tip: the ZIP can be dropped straight into a Google Drive folder — or ask to have
-              Google Drive connected for one-click uploads.
+              One PDF gives you a single print-ready file with one certificate per page. The ZIPs
+              can be dropped straight into a Google Drive folder.
             </p>
+
             <div className="mt-5 grid gap-6 md:grid-cols-2">
               {generated.map((g) => (
                 <figure key={g.name} className="rounded-lg border border-border bg-card p-3">
