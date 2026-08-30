@@ -341,12 +341,21 @@ function Home() {
                   />
                   <figcaption className="mt-3 flex items-center justify-between gap-3">
                     <span className="truncate text-sm font-medium">{g.name}</span>
-                    <button
-                      onClick={() => downloadOne(g)}
-                      className="shrink-0 rounded-md border border-input px-3 py-1.5 text-xs font-medium hover:bg-secondary"
-                    >
-                      Download PNG
-                    </button>
+                    <span className="flex shrink-0 gap-2">
+                      <button
+                        onClick={() => downloadOnePdf(g)}
+                        className="rounded-md border border-gold bg-accent/40 px-3 py-1.5 text-xs font-medium hover:bg-accent"
+                      >
+                        PDF
+                      </button>
+                      <button
+                        onClick={() => downloadOne(g)}
+                        className="rounded-md border border-input px-3 py-1.5 text-xs font-medium hover:bg-secondary"
+                      >
+                        PNG
+                      </button>
+                    </span>
+
                   </figcaption>
                 </figure>
               ))}
