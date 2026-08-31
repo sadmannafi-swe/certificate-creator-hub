@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ManageBatchIdRouteImport } from './routes/manage.$batchId'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageBatchIdRoute = ManageBatchIdRouteImport.update({
+  id: '/manage/$batchId',
+  path: '/manage/$batchId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VerifyCodeRoute = VerifyCodeRouteImport.update({
@@ -25,27 +31,31 @@ const VerifyCodeRoute = VerifyCodeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/verify/$code'
+  fullPaths: '/' | '/manage/$batchId' | '/verify/$code'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/verify/$code'
-  id: '__root__' | '/' | '/verify/$code'
+  to: '/' | '/manage/$batchId' | '/verify/$code'
+  id: '__root__' | '/' | '/manage/$batchId' | '/verify/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ManageBatchIdRoute: typeof ManageBatchIdRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage/$batchId': {
+      id: '/manage/$batchId'
+      path: '/manage/$batchId'
+      fullPath: '/manage/$batchId'
+      preLoaderRoute: typeof ManageBatchIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verify/$code': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ManageBatchIdRoute: ManageBatchIdRoute,
   VerifyCodeRoute: VerifyCodeRoute,
 }
 export const routeTree = rootRouteImport
