@@ -523,3 +523,52 @@
   padding: 58px 88px;
 }
 .cert-engraved .cert-name { text-shadow: 0 1px 0 color-mix(in oklab, white 80%, transparent); }
+
+/* ---------- Brand logo + verification QR ---------- */
+.cert-logo {
+  max-height: 76px;
+  max-width: 260px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+.cert-verify {
+  position: absolute;
+  left: 34px;
+  bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  z-index: 4;
+}
+.cert-qr {
+  width: 78px;
+  height: 78px;
+  display: block;
+  border-radius: 4px;
+  background: var(--c-panel);
+  padding: 3px;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--c-accent) 40%, transparent);
+}
+.cert-verify-meta {
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--c-soft);
+  max-width: 190px;
+}
+.cert-verify-label {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: var(--c-accent);
+}
+.cert-verify-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--c-ink);
+}
+.cert-verify-url {
+  word-break: break-all;
+  opacity: 0.75;
+}

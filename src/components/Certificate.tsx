@@ -1,10 +1,15 @@
 import { forwardRef, type CSSProperties } from "react";
 import type { CertContent, CertTemplate } from "@/lib/templates";
+import { DEFAULT_BRAND, foilFromAccent, shade, type Brand } from "@/lib/brand";
 
 interface Props {
   template: CertTemplate;
   content: CertContent;
   name: string;
+  brand?: Brand;
+  qr?: string | null;
+  code?: string | null;
+  verifyUrl?: string | null;
 }
 
 function Filigree({ className }: { className: string }) {
@@ -68,19 +73,30 @@ function Seal({ gid }: { gid: string }) {
 }
 
 export const Certificate = forwardRef<HTMLDivElement, Props>(function Certificate(
-  { template, content, name },
+  { template, content, name, brand = DEFAULT_BRAND, qr = null, code = null, verifyUrl = null },
   ref,
 ) {
-  const p = template.palette;
+  const base = template.palette;
+  const accent = brand.useCustomAccent ? brand.accent : base.accent;
+  const foil = brand.useCustomAccent ? foilFromAccent(brand.accent) : {
+    foil1: base.foil1,
+    foil2: base.foil2,
+    foil3: base.foil3,
+  };
+  const ink = brand.useCustomInk ? brand.ink : base.ink;
+  const soft = brand.useCustomInk ? shade(brand.ink, 0.42) : base.soft;
+
   const style = {
-    "--c-bg": p.bg,
-    "--c-panel": p.panel,
-    "--c-ink": p.ink,
-    "--c-soft": p.soft,
-    "--c-accent": p.accent,
-    "--c-foil-1": p.foil1,
-    "--c-foil-2": p.foil2,
-    "--c-foil-3": p.foil3,
+    "--c-bg": base.bg,
+    "--c-panel": base.panel,
+    "--c-ink": ink,
+    "--c-soft": soft,
+    "--c-accent": accent,
+    "--c-foil-1": foil.foil1,
+    "--c-foil-2": foil.foil2,
+    "--c-foil-3": foil.foil3,
+    "--font-serif-display": brand.headingFont,
+    "--font-body": brand.bodyFont,
   } as CSSProperties;
 
   const f = template.frame;
@@ -122,6 +138,7 @@ export const Certificate = forwardRef<HTMLDivElement, Props>(function Certificat
           </>
         )}
         {f === "banner" && <div className="cert-banner">{content.title}</div>}
+        {brand.logo && <img className="cert-logo" src={brand.logo} alt="" />}
         <div className="cert-org">{content.organization}</div>
         {f !== "banner" && <div className="cert-title">{content.title}</div>}
         {(f === "ornate" || f === "laurel") && <div className="cert-flourish">❦</div>}
@@ -140,6 +157,16 @@ export const Certificate = forwardRef<HTMLDivElement, Props>(function Certificat
             <div>{content.signatoryRole}</div>
           </div>
         </div>
+        {qr && (
+          <div className="cert-verify">
+            <img className="cert-qr" src={qr} alt="" />
+            <div className="cert-verify-meta">
+              <div className="cert-verify-label">Scan to verify</div>
+              {code && <div className="cert-verify-code">{code}</div>}
+              {verifyUrl && <div className="cert-verify-url">{verifyUrl}</div>}
+            </div>
+          </div>
+        )}
       </div>
       {f === "stripe" && <div className="cert-stripe-bottom" />}
     </div>
