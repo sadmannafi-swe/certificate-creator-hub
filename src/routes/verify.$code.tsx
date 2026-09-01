@@ -122,8 +122,14 @@ function VerifyPage() {
             )}
           </>
         )}
+
+        <p className="mt-10 text-center text-sm text-muted-foreground">
+          Checking another certificate?{" "}
+          <Link to="/verify" className="text-gold underline">
+            Open the verification portal
+          </Link>
+        </p>
       </main>
-    </div>
   );
 }
 
