@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as ManageBatchIdRouteImport } from './routes/manage.$batchId'
+import { Route as VerifyIndexRouteImport } from './routes/verify.index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 
 const IndexRoute = IndexRouteImport.update({
@@ -18,45 +20,66 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ManageBatchIdRoute = ManageBatchIdRouteImport.update({
   id: '/manage/$batchId',
   path: '/manage/$batchId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyIndexRoute = VerifyIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VerifyRoute,
+} as any)
 const VerifyCodeRoute = VerifyCodeRouteImport.update({
-  id: '/verify/$code',
-  path: '/verify/$code',
-  getParentRoute: () => rootRouteImport,
+  id: '/$code',
+  path: '/$code',
+  getParentRoute: () => VerifyRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/verify': typeof VerifyRouteWithChildren
   '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/verify/': typeof VerifyIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/verify': typeof VerifyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/verify': typeof VerifyRouteWithChildren
   '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/verify/': typeof VerifyIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/manage/$batchId' | '/verify/$code'
+  fullPaths: '/' | '/verify' | '/manage/$batchId' | '/verify/$code' | '/verify/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/manage/$batchId' | '/verify/$code'
-  id: '__root__' | '/' | '/manage/$batchId' | '/verify/$code'
+  to: '/' | '/manage/$batchId' | '/verify/$code' | '/verify'
+  id:
+    | '__root__'
+    | '/'
+    | '/verify'
+    | '/manage/$batchId'
+    | '/verify/$code'
+    | '/verify/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  VerifyRoute: typeof VerifyRouteWithChildren
   ManageBatchIdRoute: typeof ManageBatchIdRoute
-  VerifyCodeRoute: typeof VerifyCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,6 +91,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/manage/$batchId': {
       id: '/manage/$batchId'
       path: '/manage/$batchId'
@@ -75,20 +105,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManageBatchIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify/': {
+      id: '/verify/'
+      path: '/'
+      fullPath: '/verify/'
+      preLoaderRoute: typeof VerifyIndexRouteImport
+      parentRoute: typeof VerifyRoute
+    }
     '/verify/$code': {
       id: '/verify/$code'
-      path: '/verify/$code'
+      path: '/$code'
       fullPath: '/verify/$code'
       preLoaderRoute: typeof VerifyCodeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof VerifyRoute
     }
   }
 }
 
+interface VerifyRouteChildren {
+  VerifyCodeRoute: typeof VerifyCodeRoute
+  VerifyIndexRoute: typeof VerifyIndexRoute
+}
+
+const VerifyRouteChildren: VerifyRouteChildren = {
+  VerifyCodeRoute: VerifyCodeRoute,
+  VerifyIndexRoute: VerifyIndexRoute,
+}
+
+const VerifyRouteWithChildren =
+  VerifyRoute._addFileChildren(VerifyRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  VerifyRoute: VerifyRouteWithChildren,
   ManageBatchIdRoute: ManageBatchIdRoute,
-  VerifyCodeRoute: VerifyCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

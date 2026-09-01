@@ -105,6 +105,48 @@ export const getVerification = createServerFn({ method: "GET" })
     };
   });
 
+export const searchCertificates = createServerFn({ method: "GET" })
+  .inputValidator((data: unknown) =>
+    z.object({ query: z.string().min(2).max(200) }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const q = data.query.trim();
+    const escaped = q.replace(/[%_,]/g, " ");
+
+    // Exact code match first.
+    const { data: byCode } = await supabaseAdmin
+      .from("certificates")
+      .select("code, recipient_name, cert_title, issue_date, revoked")
+      .eq("code", q.toUpperCase())
+      .limit(1);
+
+    // Then name search (max 20 public results, no private fields).
+    const { data: byName } = await supabaseAdmin
+      .from("certificates")
+      .select("code, recipient_name, cert_title, issue_date, revoked")
+      .ilike("recipient_name", `%${escaped}%`)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    const seen = new Set<string>();
+    const results = [...(byCode ?? []), ...(byName ?? [])]
+      .filter((r) => {
+        if (seen.has(r.code)) return false;
+        seen.add(r.code);
+        return true;
+      })
+      .map((r) => ({
+        code: r.code,
+        recipientName: r.recipient_name,
+        title: r.cert_title,
+        issueDate: r.issue_date,
+        revoked: r.revoked,
+      }));
+
+    return { results };
+  });
+
 const tokenSchema = z.object({ batchId: z.string().uuid(), editToken: z.string().min(10).max(200) });
 
 export const getBatchForEdit = createServerFn({ method: "POST" })

@@ -33,16 +33,6 @@ function VerifyPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
-          <Link to="/" className="font-display text-xl font-semibold tracking-tight">
-            Gen<span className="text-gold">Certificates</span>
-          </Link>
-          <span className="text-sm text-muted-foreground">Certificate verification</span>
-        </div>
-      </header>
-
       <main className="mx-auto max-w-3xl px-6 py-12">
         {isLoading && <p className="text-muted-foreground">Checking certificate…</p>}
 
@@ -132,8 +122,14 @@ function VerifyPage() {
             )}
           </>
         )}
+
+        <p className="mt-10 text-center text-sm text-muted-foreground">
+          Checking another certificate?{" "}
+          <Link to="/verify" className="text-gold underline">
+            Open the verification portal
+          </Link>
+        </p>
       </main>
-    </div>
   );
 }
 
