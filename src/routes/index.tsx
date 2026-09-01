@@ -263,9 +263,17 @@ function Home() {
               Gen<span className="text-gold">Certificates</span>
             </span>
           </div>
-          <span className="hidden text-sm text-muted-foreground sm:block">
-            Bulk certificates for courses, seminars &amp; workshops
-          </span>
+          <div className="flex items-center gap-5">
+            <span className="hidden text-sm text-muted-foreground sm:block">
+              Bulk certificates for courses, seminars &amp; workshops
+            </span>
+            <Link
+              to="/verify"
+              className="rounded-md border border-gold px-4 py-2 text-sm font-semibold text-gold transition-colors hover:bg-accent"
+            >
+              Verify a certificate
+            </Link>
+          </div>
         </div>
       </header>
 
