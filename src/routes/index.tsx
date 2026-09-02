@@ -40,8 +40,8 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-type Job = { name: string; code: string; qr: string; url: string };
-type Generated = { name: string; dataUrl: string; code: string };
+type Job = { name: string; code: string | null; qr: string | null; url: string | null };
+type Generated = { name: string; dataUrl: string; code: string | null };
 
 function Home() {
   const [templateId, setTemplateId] = useState<string>(TEMPLATES[0]!.id);
