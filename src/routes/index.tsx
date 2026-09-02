@@ -55,6 +55,8 @@ function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [generated, setGenerated] = useState<Generated[]>([]);
   const [manageLink, setManageLink] = useState<string | null>(null);
+  const [verifyWarning, setVerifyWarning] = useState<string | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [exporting, setExporting] = useState<"pdf" | "pdf-zip" | null>(null);
   const [progress, setProgress] = useState(0);
