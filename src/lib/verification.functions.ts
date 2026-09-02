@@ -23,7 +23,16 @@ const publicBatchFields = [
 export const createCertificateBatch = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => createSchema.parse(data))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    let supabaseAdmin;
+    try {
+      ({ supabaseAdmin } = await import("@/integrations/supabase/client.server"));
+      // Touch the client so a missing-env failure surfaces here, not mid-insert.
+      void supabaseAdmin.from("certificate_batches");
+    } catch (err) {
+      console.error("[verification] backend unavailable", err);
+      throw new Error("VERIFICATION_BACKEND_UNAVAILABLE");
+    }
+
 
     const { data: batch, error } = await supabaseAdmin
       .from("certificate_batches")
