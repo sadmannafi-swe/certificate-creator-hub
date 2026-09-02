@@ -919,3 +919,16 @@ function Field({
     </label>
   );
 }
+
+function errorText(err: unknown): string {
+  const raw =
+    err instanceof Error
+      ? err.message
+      : typeof err === "string"
+        ? err
+        : "Unexpected error.";
+  if (/Missing Supabase environment|VERIFICATION_BACKEND_UNAVAILABLE|Failed to fetch|NetworkError|502|503|500/i.test(raw)) {
+    return "The verification service is not configured on this deployment.";
+  }
+  return raw;
+}
