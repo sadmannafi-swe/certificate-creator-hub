@@ -644,7 +644,18 @@ function Home() {
       </main>
 
       <footer className="mt-16 border-t border-border py-8 text-center text-sm text-muted-foreground">
-        GenCertificates — certificates render in your browser; only verification details are stored.
+        <p>GenCertificates — certificates render in your browser; only verification details are stored.</p>
+        <p className="mt-2">
+          Developed by{" "}
+          <a
+            href="https://www.linkedin.com/in/sadman-nahial-nafi/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-gold underline underline-offset-2 hover:text-foreground"
+          >
+            Sadman Nahial Nafi
+          </a>
+        </p>
       </footer>
 
       {/* Offscreen render stage at full resolution */}
