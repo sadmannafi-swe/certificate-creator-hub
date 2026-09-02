@@ -708,7 +708,7 @@ function Home() {
         style={{ position: "fixed", top: 0, left: -20000, width: 1000, pointerEvents: "none" }}
       >
         {jobs.map((j) => (
-          <div key={j.code} data-cert>
+          <div key={`${j.code ?? "nocode"}-${j.name}`} data-cert>
             <Certificate
               template={template}
               content={content}
@@ -716,7 +716,7 @@ function Home() {
               name={j.name}
               qr={j.qr}
               code={j.code}
-              verifyUrl={j.url.replace(/^https?:\/\//, "")}
+              verifyUrl={j.url ? j.url.replace(/^https?:\/\//, "") : null}
             />
           </div>
         ))}
