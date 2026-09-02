@@ -628,8 +628,8 @@ function Home() {
             </p>
 
             <div className="mt-5 grid gap-6 md:grid-cols-2">
-              {generated.map((g) => (
-                <figure key={g.code} className="rounded-lg border border-border bg-card p-3">
+              {generated.map((g, gi) => (
+                <figure key={`${g.code ?? "nocode"}-${gi}`} className="rounded-lg border border-border bg-card p-3">
                   <img
                     src={g.dataUrl}
                     alt={`Certificate for ${g.name}`}
@@ -639,15 +639,20 @@ function Home() {
                   <figcaption className="mt-3 flex items-center justify-between gap-3">
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-medium">{g.name}</span>
-                      <a
-                        href={`/verify/${g.code}`}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className="font-mono text-xs text-gold underline"
-                      >
-                        {g.code}
-                      </a>
+                      {g.code ? (
+                        <a
+                          href={`/verify/${g.code}`}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="font-mono text-xs text-gold underline"
+                        >
+                          {g.code}
+                        </a>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">no verification code</span>
+                      )}
                     </span>
+
                     <span className="flex shrink-0 gap-2">
                       <button
                         onClick={() => downloadOnePdf(g)}
