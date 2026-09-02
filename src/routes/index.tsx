@@ -707,8 +707,8 @@ function Home() {
         aria-hidden
         style={{ position: "fixed", top: 0, left: -20000, width: 1000, pointerEvents: "none" }}
       >
-        {jobs.map((j) => (
-          <div key={`${j.code ?? "nocode"}-${j.name}`} data-cert>
+        {jobs.map((j, ji) => (
+          <div key={`${j.code ?? "nocode"}-${ji}`} data-cert>
             <Certificate
               template={template}
               content={content}
