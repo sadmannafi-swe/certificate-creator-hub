@@ -40,8 +40,8 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-type Job = { name: string; code: string; qr: string; url: string };
-type Generated = { name: string; dataUrl: string; code: string };
+type Job = { name: string; code: string | null; qr: string | null; url: string | null };
+type Generated = { name: string; dataUrl: string; code: string | null };
 
 function Home() {
   const [templateId, setTemplateId] = useState<string>(TEMPLATES[0]!.id);
@@ -55,6 +55,8 @@ function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [generated, setGenerated] = useState<Generated[]>([]);
   const [manageLink, setManageLink] = useState<string | null>(null);
+  const [verifyWarning, setVerifyWarning] = useState<string | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [exporting, setExporting] = useState<"pdf" | "pdf-zip" | null>(null);
   const [progress, setProgress] = useState(0);
@@ -108,8 +110,16 @@ function Home() {
     setBusy(true);
     setProgress(0);
     setGenerated([]);
+    setGenError(null);
+    setVerifyWarning(null);
+    setManageLink(null);
+    const origin = window.location.origin;
+
+    // 1. Try to register the batch so every certificate gets a permanent verification code.
+    //    If the verification backend is unreachable (e.g. a self-hosted deploy without the
+    //    backend env vars), we still generate every certificate — just without QR codes.
+    let issued: { name: string; code: string }[] | null = null;
     try {
-      // 1. Register the batch so every certificate gets a permanent verification code.
       const res = await createBatch({
         data: {
           organization: content.organization,
@@ -121,22 +131,35 @@ function Home() {
           names,
         },
       });
+      issued = res.certificates;
+      setManageLink(`${origin}/manage/${res.batchId}?token=${res.editToken}`);
+    } catch (err) {
+      console.error("[GenCertificates] verification backend unavailable", err);
+      setVerifyWarning(
+        `${errorText(err)} Certificates were still generated, but without QR verification codes.`,
+      );
+    }
 
+    try {
       const QRCode = await import("qrcode");
-      const origin = window.location.origin;
       const nextJobs: Job[] = [];
-      for (const c of res.certificates) {
-        const url = `${origin}/verify/${c.code}`;
-        const qr = await QRCode.toDataURL(url, {
-          margin: 0,
-          width: 240,
-          errorCorrectionLevel: "M",
-          color: { dark: "#111111", light: "#ffffff" },
-        });
-        nextJobs.push({ name: c.name, code: c.code, qr, url });
+      if (issued) {
+        for (const c of issued) {
+          const url = `${origin}/verify/${c.code}`;
+          const qr = await QRCode.toDataURL(url, {
+            margin: 0,
+            width: 240,
+            errorCorrectionLevel: "M",
+            color: { dark: "#111111", light: "#ffffff" },
+          });
+          nextJobs.push({ name: c.name, code: c.code, qr, url });
+        }
+      } else {
+        for (const name of names) {
+          nextJobs.push({ name, code: null, qr: null, url: null });
+        }
       }
       setJobs(nextJobs);
-      setManageLink(`${origin}/manage/${res.batchId}?token=${res.editToken}`);
 
       // 2. Let React paint the offscreen stage with the QR codes before capturing.
       await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
@@ -157,9 +180,13 @@ function Home() {
         setProgress(i + 1);
       }
       setGenerated(out);
+      if (issued) toast.success(`Generated ${out.length} certificates`);
+      else toast.warning("Generated without QR verification — backend unavailable");
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong while generating certificates");
+      const message = errorText(err);
+      setGenError(message);
+      toast.error(message);
     } finally {
       setBusy(false);
     }
@@ -530,6 +557,17 @@ function Home() {
               {names.length} name{names.length === 1 ? "" : "s"} detected
             </span>
           </div>
+
+          {genError && (
+            <p className="mt-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+              {genError}
+            </p>
+          )}
+          {verifyWarning && (
+            <p className="mt-4 rounded-lg border border-gold/50 bg-accent/30 p-4 text-sm text-muted-foreground">
+              {verifyWarning}
+            </p>
+          )}
         </section>
 
         {/* Step 5 — results */}
@@ -601,8 +639,8 @@ function Home() {
             </p>
 
             <div className="mt-5 grid gap-6 md:grid-cols-2">
-              {generated.map((g) => (
-                <figure key={g.code} className="rounded-lg border border-border bg-card p-3">
+              {generated.map((g, gi) => (
+                <figure key={`${g.code ?? "nocode"}-${gi}`} className="rounded-lg border border-border bg-card p-3">
                   <img
                     src={g.dataUrl}
                     alt={`Certificate for ${g.name}`}
@@ -612,15 +650,20 @@ function Home() {
                   <figcaption className="mt-3 flex items-center justify-between gap-3">
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-medium">{g.name}</span>
-                      <a
-                        href={`/verify/${g.code}`}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className="font-mono text-xs text-gold underline"
-                      >
-                        {g.code}
-                      </a>
+                      {g.code ? (
+                        <a
+                          href={`/verify/${g.code}`}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="font-mono text-xs text-gold underline"
+                        >
+                          {g.code}
+                        </a>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">no verification code</span>
+                      )}
                     </span>
+
                     <span className="flex shrink-0 gap-2">
                       <button
                         onClick={() => downloadOnePdf(g)}
@@ -664,8 +707,8 @@ function Home() {
         aria-hidden
         style={{ position: "fixed", top: 0, left: -20000, width: 1000, pointerEvents: "none" }}
       >
-        {jobs.map((j) => (
-          <div key={j.code} data-cert>
+        {jobs.map((j, ji) => (
+          <div key={`${j.code ?? "nocode"}-${ji}`} data-cert>
             <Certificate
               template={template}
               content={content}
@@ -673,7 +716,7 @@ function Home() {
               name={j.name}
               qr={j.qr}
               code={j.code}
-              verifyUrl={j.url.replace(/^https?:\/\//, "")}
+              verifyUrl={j.url ? j.url.replace(/^https?:\/\//, "") : null}
             />
           </div>
         ))}
@@ -875,4 +918,17 @@ function Field({
       )}
     </label>
   );
+}
+
+function errorText(err: unknown): string {
+  const raw =
+    err instanceof Error
+      ? err.message
+      : typeof err === "string"
+        ? err
+        : "Unexpected error.";
+  if (/Missing Supabase environment|VERIFICATION_BACKEND_UNAVAILABLE|Failed to fetch|NetworkError|502|503|500/i.test(raw)) {
+    return "The verification service is not configured on this deployment.";
+  }
+  return raw;
 }
