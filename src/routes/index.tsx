@@ -110,8 +110,16 @@ function Home() {
     setBusy(true);
     setProgress(0);
     setGenerated([]);
+    setGenError(null);
+    setVerifyWarning(null);
+    setManageLink(null);
+    const origin = window.location.origin;
+
+    // 1. Try to register the batch so every certificate gets a permanent verification code.
+    //    If the verification backend is unreachable (e.g. a self-hosted deploy without the
+    //    backend env vars), we still generate every certificate — just without QR codes.
+    let issued: { name: string; code: string }[] | null = null;
     try {
-      // 1. Register the batch so every certificate gets a permanent verification code.
       const res = await createBatch({
         data: {
           organization: content.organization,
@@ -123,22 +131,35 @@ function Home() {
           names,
         },
       });
+      issued = res.certificates;
+      setManageLink(`${origin}/manage/${res.batchId}?token=${res.editToken}`);
+    } catch (err) {
+      console.error("[GenCertificates] verification backend unavailable", err);
+      setVerifyWarning(
+        `${errorText(err)} Certificates were still generated, but without QR verification codes.`,
+      );
+    }
 
+    try {
       const QRCode = await import("qrcode");
-      const origin = window.location.origin;
       const nextJobs: Job[] = [];
-      for (const c of res.certificates) {
-        const url = `${origin}/verify/${c.code}`;
-        const qr = await QRCode.toDataURL(url, {
-          margin: 0,
-          width: 240,
-          errorCorrectionLevel: "M",
-          color: { dark: "#111111", light: "#ffffff" },
-        });
-        nextJobs.push({ name: c.name, code: c.code, qr, url });
+      if (issued) {
+        for (const c of issued) {
+          const url = `${origin}/verify/${c.code}`;
+          const qr = await QRCode.toDataURL(url, {
+            margin: 0,
+            width: 240,
+            errorCorrectionLevel: "M",
+            color: { dark: "#111111", light: "#ffffff" },
+          });
+          nextJobs.push({ name: c.name, code: c.code, qr, url });
+        }
+      } else {
+        for (const name of names) {
+          nextJobs.push({ name, code: null, qr: null, url: null });
+        }
       }
       setJobs(nextJobs);
-      setManageLink(`${origin}/manage/${res.batchId}?token=${res.editToken}`);
 
       // 2. Let React paint the offscreen stage with the QR codes before capturing.
       await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
@@ -159,9 +180,13 @@ function Home() {
         setProgress(i + 1);
       }
       setGenerated(out);
+      if (issued) toast.success(`Generated ${out.length} certificates`);
+      else toast.warning("Generated without QR verification — backend unavailable");
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong while generating certificates");
+      const message = errorText(err);
+      setGenError(message);
+      toast.error(message);
     } finally {
       setBusy(false);
     }
