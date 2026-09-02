@@ -557,6 +557,17 @@ function Home() {
               {names.length} name{names.length === 1 ? "" : "s"} detected
             </span>
           </div>
+
+          {genError && (
+            <p className="mt-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+              {genError}
+            </p>
+          )}
+          {verifyWarning && (
+            <p className="mt-4 rounded-lg border border-gold/50 bg-accent/30 p-4 text-sm text-muted-foreground">
+              {verifyWarning}
+            </p>
+          )}
         </section>
 
         {/* Step 5 — results */}
