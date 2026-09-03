@@ -460,21 +460,65 @@ function Home() {
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold">Live preview</h2>
-            <div className="mt-4 overflow-hidden rounded-lg border border-border bg-secondary p-4">
-              <ScaledCert>
-                <Certificate
-                  template={template}
-                  content={content}
-                  brand={brand}
-                  name={names[0] ?? "Participant Name"}
-                  qr={previewQr}
-                  code="XXXXXXXXXX"
-                  verifyUrl="preview — real code added on generate"
-                />
-              </ScaledCert>
+            <div className="sticky top-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-lg font-semibold">
+                  Live preview
+                  <span className="ml-2 align-middle text-xs font-medium uppercase tracking-wide text-gold">
+                    updates as you type
+                  </span>
+                </h2>
+                {names.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setPreviewIndex((i) => (i - 1 + names.length) % names.length)}
+                      className="rounded-md border border-input px-2 py-1 text-sm hover:bg-secondary"
+                      aria-label="Previous recipient"
+                    >
+                      ‹
+                    </button>
+                    <select
+                      value={Math.min(previewIndex, names.length - 1)}
+                      onChange={(e) => setPreviewIndex(Number(e.target.value))}
+                      className="max-w-[190px] rounded-md border border-input bg-background px-2 py-1.5 text-sm"
+                      aria-label="Preview recipient"
+                    >
+                      {names.map((n, i) => (
+                        <option key={`${n}-${i}`} value={i}>
+                          {i + 1}. {n}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={() => setPreviewIndex((i) => (i + 1) % names.length)}
+                      className="rounded-md border border-input px-2 py-1 text-sm hover:bg-secondary"
+                      aria-label="Next recipient"
+                    >
+                      ›
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="mt-4 overflow-hidden rounded-lg border border-border bg-secondary p-4">
+                <ScaledCert>
+                  <Certificate
+                    template={template}
+                    content={content}
+                    brand={brand}
+                    name={previewName}
+                    qr={previewQr}
+                    code="XXXXXXXXXX"
+                    verifyUrl="preview — real code added on generate"
+                  />
+                </ScaledCert>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Showing recipient {names.length ? Math.min(previewIndex, names.length - 1) + 1 : 0}{" "}
+                of {names.length} — names, date and signature update instantly.
+              </p>
             </div>
           </div>
+
         </section>
 
         {/* Step 4 — names */}
