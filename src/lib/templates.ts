@@ -14,7 +14,15 @@ export type FrameId =
   | "guilloche"
   | "foil"
   | "marble"
-  | "engraved";
+  | "engraved"
+  | "ribbon"
+  | "medallion"
+  | "geometric"
+  | "wave"
+  | "vintage"
+  | "diploma"
+  | "monogram"
+  | "gradient";
 
 export interface Palette {
   id: string;
@@ -53,6 +61,14 @@ const FRAMES: { id: FrameId; name: string }[] = [
   { id: "foil", name: "Foil" },
   { id: "marble", name: "Marble" },
   { id: "engraved", name: "Engraved" },
+  { id: "ribbon", name: "Ribbon" },
+  { id: "medallion", name: "Medallion" },
+  { id: "geometric", name: "Geometric" },
+  { id: "wave", name: "Wave" },
+  { id: "vintage", name: "Vintage" },
+  { id: "diploma", name: "Diploma" },
+  { id: "monogram", name: "Monogram" },
+  { id: "gradient", name: "Gradient" },
 ];
 
 const PALETTES: Palette[] = [
@@ -127,6 +143,42 @@ const PALETTES: Palette[] = [
     ink: "#0f2b2c",
     soft: "#4f7273",
     accent: "#127475",
+  },
+  {
+    id: "plum",
+    foil1: "#4a2160",
+    foil2: "#a276c4",
+    foil3: "#f0e2fa",
+    name: "Plum",
+    bg: "#faf6fd",
+    panel: "#ffffff",
+    ink: "#2b1637",
+    soft: "#6c5877",
+    accent: "#6b3a92",
+  },
+  {
+    id: "copper",
+    foil1: "#7a3d19",
+    foil2: "#d08a56",
+    foil3: "#ffe6d1",
+    name: "Copper",
+    bg: "#fdf8f4",
+    panel: "#ffffff",
+    ink: "#32200f",
+    soft: "#7a6455",
+    accent: "#a45a26",
+  },
+  {
+    id: "midnight",
+    foil1: "#1b1f3b",
+    foil2: "#7f86c9",
+    foil3: "#e3e6ff",
+    name: "Midnight",
+    bg: "#f5f6fb",
+    panel: "#ffffff",
+    ink: "#141733",
+    soft: "#585d80",
+    accent: "#2f3670",
   },
 ];
 

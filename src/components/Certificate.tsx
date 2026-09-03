@@ -110,6 +110,12 @@ export const Certificate = forwardRef<HTMLDivElement, Props>(function Certificat
       {f === "guilloche" && <div className="cert-guilloche-bg" />}
       {f === "deco" && <div className="cert-deco-bg" />}
       {f === "foil" && <div className="cert-foil-bg" />}
+      {f === "ribbon" && <div className="cert-ribbon-bg" />}
+      {f === "medallion" && <div className="cert-medallion-bg" />}
+      {f === "geometric" && <div className="cert-geometric-bg" />}
+      {f === "wave" && <div className="cert-wave-bg" />}
+      {f === "monogram" && <div className="cert-monogram-bg" />}
+      {f === "gradient" && <div className="cert-gradient-bg" />}
 
       {/* luxury texture stack — present on every template */}
       <div className="cert-tex-weave" />
@@ -129,7 +135,7 @@ export const Certificate = forwardRef<HTMLDivElement, Props>(function Certificat
             <span className="cert-corner cert-corner-br" />
           </>
         )}
-        {(f === "ornate" || f === "laurel" || f === "engraved") && (
+        {(f === "ornate" || f === "laurel" || f === "engraved" || f === "vintage" || f === "medallion") && (
           <>
             <Filigree className="cert-filigree cert-filigree-tl" />
             <Filigree className="cert-filigree cert-filigree-tr" />
