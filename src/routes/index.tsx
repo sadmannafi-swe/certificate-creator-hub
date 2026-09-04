@@ -60,6 +60,8 @@ function Home() {
   const [busy, setBusy] = useState(false);
   const [exporting, setExporting] = useState<"pdf" | "pdf-zip" | null>(null);
   const [progress, setProgress] = useState(0);
+  const [previewIndex, setPreviewIndex] = useState(0);
+
 
   const stageRef = useRef<HTMLDivElement>(null);
   const template = TEMPLATES.find((t) => t.id === templateId)!;
@@ -71,6 +73,10 @@ function Home() {
     }
     return parseNames(rawNames);
   }, [sheet, nameColumn, rawNames]);
+  const previewName = names.length
+    ? (names[Math.min(previewIndex, names.length - 1)] ?? "Participant Name")
+    : "Participant Name";
+
 
   const visibleTemplates = useMemo(
     () =>
