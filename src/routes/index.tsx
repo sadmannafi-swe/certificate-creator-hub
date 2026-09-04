@@ -73,6 +73,10 @@ function Home() {
     }
     return parseNames(rawNames);
   }, [sheet, nameColumn, rawNames]);
+  const previewName = names.length
+    ? (names[Math.min(previewIndex, names.length - 1)] ?? "Participant Name")
+    : "Participant Name";
+
 
   const visibleTemplates = useMemo(
     () =>
