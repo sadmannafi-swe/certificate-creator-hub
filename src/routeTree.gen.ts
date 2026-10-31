@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MyTemplatesRouteImport } from './routes/my-templates'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as ManageBatchIdRouteImport } from './routes/manage.$batchId'
 import { Route as VerifyIndexRouteImport } from './routes/verify.index'
@@ -18,6 +19,11 @@ import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyTemplatesRoute = MyTemplatesRouteImport.update({
+  id: '/my-templates',
+  path: '/my-templates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VerifyRoute = VerifyRouteImport.update({
@@ -43,6 +49,7 @@ const VerifyCodeRoute = VerifyCodeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/my-templates': typeof MyTemplatesRoute
   '/verify': typeof VerifyRouteWithChildren
   '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/my-templates': typeof MyTemplatesRoute
   '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/verify': typeof VerifyIndexRoute
@@ -57,6 +65,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/my-templates': typeof MyTemplatesRoute
   '/verify': typeof VerifyRouteWithChildren
   '/manage/$batchId': typeof ManageBatchIdRoute
   '/verify/$code': typeof VerifyCodeRoute
@@ -64,12 +73,19 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/verify' | '/manage/$batchId' | '/verify/$code' | '/verify/'
+  fullPaths:
+    | '/'
+    | '/my-templates'
+    | '/verify'
+    | '/manage/$batchId'
+    | '/verify/$code'
+    | '/verify/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/manage/$batchId' | '/verify/$code' | '/verify'
+  to: '/' | '/my-templates' | '/manage/$batchId' | '/verify/$code' | '/verify'
   id:
     | '__root__'
     | '/'
+    | '/my-templates'
     | '/verify'
     | '/manage/$batchId'
     | '/verify/$code'
@@ -78,6 +94,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MyTemplatesRoute: typeof MyTemplatesRoute
   VerifyRoute: typeof VerifyRouteWithChildren
   ManageBatchIdRoute: typeof ManageBatchIdRoute
 }
@@ -89,6 +106,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-templates': {
+      id: '/my-templates'
+      path: '/my-templates'
+      fullPath: '/my-templates'
+      preLoaderRoute: typeof MyTemplatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verify': {
@@ -137,6 +161,7 @@ const VerifyRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MyTemplatesRoute: MyTemplatesRoute,
   VerifyRoute: VerifyRouteWithChildren,
   ManageBatchIdRoute: ManageBatchIdRoute,
 }

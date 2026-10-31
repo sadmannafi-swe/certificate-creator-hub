@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /**
  * Renders a fixed 1000x707 certificate canvas scaled down to fit its parent.
@@ -17,25 +17,10 @@ export function ScaledCert({ children }: { children: ReactNode }) {
           fit();
           const ro = new ResizeObserver(fit);
           ro.observe(el.parentElement);
-          useEffectCleanupMap.set(el, () => ro.disconnect());
         }}
       >
         {children}
       </div>
     </div>
   );
-}
-
-const useEffectCleanupMap = new Map<Element, () => void>();
-
-// Disconnect observers when the wrapper unmounts.
-if (typeof window !== "undefined") {
-  new MutationObserver(() => {
-    useEffectCleanupMap.forEach((cleanup, el) => {
-      if (!el.isConnected) {
-        cleanup();
-        useEffectCleanupMap.delete(el);
-      }
-    });
-  }).observe(document.body, { childList: true, subtree: true });
 }
