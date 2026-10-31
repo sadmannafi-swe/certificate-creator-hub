@@ -7,6 +7,8 @@ import { Seal } from "./Certificate";
 interface Props {
   config: CustomTemplateConfig;
   background: string | null;
+  /** Data URL of the logo image; positions/size come from config.logo. */
+  logo?: string | null;
   content: CertContent;
   name: string;
   qr?: string | null;
@@ -34,17 +36,16 @@ function fieldText(key: CustomFieldKey, content: CertContent, name: string): str
 }
 
 export const CustomCertificate = forwardRef<HTMLDivElement, Props>(function CustomCertificate(
-  { config, background, content, name, qr = null, code = null, verifyUrl = null },
+  { config, background, logo = null, content, name, qr = null, code = null, verifyUrl = null },
   ref,
 ) {
   const foil = foilFromAccent(config.accent);
-  const soft = config.ink;
 
   const style = {
     "--c-bg": "#fffdf6",
     "--c-panel": "#ffffff",
     "--c-ink": config.ink,
-    "--c-soft": soft,
+    "--c-soft": config.ink,
     "--c-accent": config.accent,
     "--c-foil-1": foil.foil1,
     "--c-foil-2": foil.foil2,
@@ -77,23 +78,23 @@ export const CustomCertificate = forwardRef<HTMLDivElement, Props>(function Cust
         </>
       )}
 
-      {config.logo && (
+      {config.logo && logo && (
         <img
           className="cert-custom-logo"
-          src={config.logo && (config as { logoSrc?: string }).logoSrc}
+          src={logo}
           alt=""
-          style={{
-            left: config.logo.x,
-            top: config.logo.y,
-            width: config.logo.width,
-          }}
+          style={{ left: config.logo.x, top: config.logo.y, width: config.logo.width }}
         />
       )}
 
       {(Object.keys(config.fields) as CustomFieldKey[]).map((key) => {
         const f = config.fields[key]!;
         const transform =
-          f.align === "center" ? "translateX(-50%)" : f.align === "right" ? "translateX(-100%)" : undefined;
+          f.align === "center"
+            ? "translateX(-50%)"
+            : f.align === "right"
+              ? "translateX(-100%)"
+              : undefined;
         return (
           <div
             key={key}
@@ -118,11 +119,12 @@ export const CustomCertificate = forwardRef<HTMLDivElement, Props>(function Cust
                 style={{
                   fontSize: Math.max(10, f.size * 0.6),
                   fontFamily: "var(--font-body, sans-serif)",
-                  color: soft,
+                  color: config.ink,
                   opacity: 0.75,
                   marginTop: 2,
                   textTransform: "none",
                   letterSpacing: 0,
+                  fontStyle: "normal",
                 }}
               >
                 {content.signatoryRole}
@@ -149,9 +151,9 @@ export const CustomCertificate = forwardRef<HTMLDivElement, Props>(function Cust
       {qr && config.qr && (
         <div
           className="cert-custom-qr"
-          style={{ left: config.qr.x, top: config.qr.y, width: config.qr.width }}
+          style={{ left: config.qr.x, top: config.qr.y }}
         >
-          <img className="cert-qr" src={qr} alt="" />
+          <img className="cert-custom-qr-img" src={qr} alt="" style={{ width: config.qr.width }} />
           <div className="cert-custom-qr-meta">
             <div className="cert-custom-qr-label">Scan to verify</div>
             {code && <div className="cert-verify-code">{code}</div>}
