@@ -28,6 +28,7 @@ const fieldStyleSchema = z.object({
 const configSchema = z.object({
   fields: z.record(z.string(), fieldStyleSchema),
   logo: z.object({ x: z.number(), y: z.number(), width: z.number() }).nullable(),
+  logoSrc: z.string().max(1_700_000).nullable(),
   qr: z.object({ x: z.number(), y: z.number(), width: z.number() }).nullable(),
   seal: z.object({ x: z.number(), y: z.number(), width: z.number() }).nullable(),
   ink: z.string().max(40),

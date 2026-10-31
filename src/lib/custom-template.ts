@@ -142,6 +142,8 @@ export function normalizeConfig(raw: unknown): CustomTemplateConfig {
   return {
     fields: base.fields,
     logo: normalizePlaced(r.logo, base.logo),
+    logoSrc:
+      typeof r.logoSrc === "string" && r.logoSrc.length <= 1_600_000 ? r.logoSrc : null,
     qr: normalizePlaced(r.qr, base.qr),
     seal: normalizePlaced(r.seal, base.seal),
     ink: normalizeColor(r.ink, INK),
