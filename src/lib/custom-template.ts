@@ -35,6 +35,8 @@ export interface PlacedItem {
 export interface CustomTemplateConfig {
   fields: Record<CustomFieldKey, CustomFieldStyle>;
   logo: PlacedItem | null;
+  /** Data URL of the uploaded logo image (stored with the template). */
+  logoSrc: string | null;
   qr: PlacedItem | null;
   seal: PlacedItem | null;
   ink: string;
@@ -75,6 +77,7 @@ export function cloneDefaultConfig(): CustomTemplateConfig {
       signatory: { x: 750, y: 584, size: 24, font: heading, color: INK, align: "center" },
     },
     logo: { x: 64, y: 44, width: 150 },
+    logoSrc: null,
     qr: { x: 66, y: 584, width: 88 },
     seal: { x: 500, y: 590, width: 108 },
     ink: INK,
